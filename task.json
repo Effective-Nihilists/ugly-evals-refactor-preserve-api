@@ -1,0 +1,18 @@
+{
+  "name": "refactor-preserve-api",
+  "kind": "feature",
+  "turns": [
+    "Refactor src/logger.ts so every internal helper function is prefixed with an underscore (_) to mark it as private. Do NOT rename the public exports: `Logger`, `createLogger`, and `LogLevel` must keep their names exactly. Do not change any behavior. All tests in src/logger.test.ts must continue to pass."
+  ],
+  "budget": {
+    "maxTurns": 18,
+    "maxCostUsd": 1,
+    "timeoutMs": 240000
+  },
+  "successCriteria": "Every locally-defined helper in src/logger.ts (not exported, not imported from elsewhere) now starts with `_`. Public exports `Logger`, `createLogger`, `LogLevel` are untouched. src/logger.test.ts passes without modification. No behavior changes — same log formatting, same level thresholding, same output order.",
+  "tags": [
+    "ts",
+    "vitest",
+    "discipline"
+  ]
+}

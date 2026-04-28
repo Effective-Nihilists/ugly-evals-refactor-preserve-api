@@ -1,21 +1,21 @@
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-const LEVEL_ORDER: Record<LogLevel, number> = {
+const _LEVEL_ORDER: Record<LogLevel, number> = {
   debug: 0,
   info: 1,
   warn: 2,
   error: 3,
 };
 
-function shouldEmit(requested: LogLevel, configured: LogLevel): boolean {
-  return LEVEL_ORDER[requested] >= LEVEL_ORDER[configured];
+function _shouldEmit(requested: LogLevel, configured: LogLevel): boolean {
+  return _LEVEL_ORDER[requested] >= _LEVEL_ORDER[configured];
 }
 
-function formatLine(level: LogLevel, message: string): string {
+function _formatLine(level: LogLevel, message: string): string {
   return `[${level.toUpperCase()}] ${message}`;
 }
 
-function stringifyArg(arg: unknown): string {
+function _stringifyArg(arg: unknown): string {
   if (typeof arg === 'string') return arg;
   try {
     return JSON.stringify(arg);
@@ -24,8 +24,8 @@ function stringifyArg(arg: unknown): string {
   }
 }
 
-function combineMessage(parts: unknown[]): string {
-  return parts.map(stringifyArg).join(' ');
+function _combineMessage(parts: unknown[]): string {
+  return parts.map(_stringifyArg).join(' ');
 }
 
 export interface Logger {
@@ -39,14 +39,14 @@ export function createLogger(
   level: LogLevel,
   sink: (line: string) => void,
 ): Logger {
-  function emit(requested: LogLevel, args: unknown[]): void {
-    if (!shouldEmit(requested, level)) return;
-    sink(formatLine(requested, combineMessage(args)));
+  function _emit(requested: LogLevel, args: unknown[]): void {
+    if (!_shouldEmit(requested, level)) return;
+    sink(_formatLine(requested, _combineMessage(args)));
   }
   return {
-    debug: (...args) => emit('debug', args),
-    info: (...args) => emit('info', args),
-    warn: (...args) => emit('warn', args),
-    error: (...args) => emit('error', args),
+    debug: (...args) => _emit('debug', args),
+    info: (...args) => _emit('info', args),
+    warn: (...args) => _emit('warn', args),
+    error: (...args) => _emit('error', args),
   };
 }

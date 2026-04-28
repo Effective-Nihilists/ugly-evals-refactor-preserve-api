@@ -7,15 +7,15 @@ const LEVEL_ORDER: Record<LogLevel, number> = {
   error: 3,
 };
 
-function shouldEmit(requested: LogLevel, configured: LogLevel): boolean {
+function _shouldEmit(requested: LogLevel, configured: LogLevel): boolean {
   return LEVEL_ORDER[requested] >= LEVEL_ORDER[configured];
 }
 
-function formatLine(level: LogLevel, message: string): string {
+function _formatLine(level: LogLevel, message: string): string {
   return `[${level.toUpperCase()}] ${message}`;
 }
 
-function stringifyArg(arg: unknown): string {
+function _stringifyArg(arg: unknown): string {
   if (typeof arg === 'string') return arg;
   try {
     return JSON.stringify(arg);
@@ -24,8 +24,8 @@ function stringifyArg(arg: unknown): string {
   }
 }
 
-function combineMessage(parts: unknown[]): string {
-  return parts.map(stringifyArg).join(' ');
+function _combineMessage(parts: unknown[]): string {
+  return parts.map(_stringifyArg).join(' ');
 }
 
 export interface Logger {
@@ -40,8 +40,8 @@ export function createLogger(
   sink: (line: string) => void,
 ): Logger {
   function emit(requested: LogLevel, args: unknown[]): void {
-    if (!shouldEmit(requested, level)) return;
-    sink(formatLine(requested, combineMessage(args)));
+    if (!_shouldEmit(requested, level)) return;
+    sink(_formatLine(requested, _combineMessage(args)));
   }
   return {
     debug: (...args) => emit('debug', args),
